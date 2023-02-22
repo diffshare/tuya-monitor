@@ -7,6 +7,7 @@
     "dev": "ts-node src/index.ts"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.6.0",
     "tuyapi": "codetheweb/tuyapi"
   },
   "devDependencies": {
