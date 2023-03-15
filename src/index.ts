@@ -21,7 +21,7 @@ const checkEnvironmentVariables = () => {
 };
 
 // Create and configure TuyAPI device
-const createDevice = (dev) => {
+const createDevice = (dev:Device) => {
   const device = new TuyAPI({
     id: dev.id,
     key: dev.key,
@@ -37,7 +37,7 @@ const createDevice = (dev) => {
 };
 
 // Register event listeners for TuyAPI device
-const registerDeviceEventListeners = (device) => {
+const registerDeviceEventListeners = (device:TuyAPI) => {
   device.on('connected', () => console.log('Connected to device!'));
   device.on('disconnected', () => console.log('Disconnected from device.'));
   device.on('error', (error) => console.log('Error!', error));
@@ -50,14 +50,14 @@ const createElasticClient = () => {
       url: new URL('https://elastic.diffshare.com/'),
     },
     auth: {
-      username: process.env.ELASTIC_USERNAME,
-      password: process.env.ELASTIC_PASSWORD,
+      username: process.env.ELASTIC_USERNAME as string,
+      password: process.env.ELASTIC_PASSWORD as string,
     },
   });
 };
 
 // Index data in Elasticsearch
-const index = async (client, dev, data) => {
+const index = async (client:Client, dev:Device, data:any) => {
   if (Number.isNaN(data.dps['19'])) return;
 
   const name = `${dev.name}_power`;
@@ -80,7 +80,7 @@ const index = async (client, dev, data) => {
 };
 
 // Register data event listeners for TuyAPI device
-const registerDataEventListeners = (device, client, dev) => {
+const registerDataEventListeners = (device:TuyAPI, client:Client, dev:Device) => {
   device.on('dp-refresh', (data) => index(client, dev, data));
   device.on('data', (data) => {
     console.log('Data from device:', data);
@@ -92,7 +92,7 @@ const registerDataEventListeners = (device, client, dev) => {
   }, 3000);
 };
 
-const observe = async (dev) => {
+const observe = async (dev:Device) => {
   checkEnvironmentVariables();
 
   const device = createDevice(dev);
